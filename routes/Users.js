@@ -25,12 +25,13 @@ users.post('/register', (req, res, next) => {
             if (!user) {
                 bcrypt.hash(password, 10, (error, hash) => {
                     userData.password = hash;
+
                     userModel.create(userData)
                         .then(user => res.json({ username: user.username, email: user.email }))
                         .catch(error => next(error));
                 });
             } else {
-                next({ message: "User already exists" });
+                next({ message: "User already exists." });
             }
         })
         .catch(error => next(error));
@@ -49,7 +50,7 @@ users.post('/login', (req, res, next) => {
                     }
                 });
             } else {
-                next({ message: 'User does not exist' });
+                next({ message: 'User does not exist.' });
             }
         })
         .catch(error => next(error));

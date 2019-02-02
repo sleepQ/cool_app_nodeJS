@@ -24,17 +24,19 @@ app.use('/users', Users);
 
 
 
-app.use((err, req, res, next) => {
-    const statusCode = (err || {}).statusCode || 404;
-    const error = (err || {}).message || 'Something went wrong.';
+app.use((error, req, res, next) => {
+    const err = error || {};
+    const statusCode = err.statusCode || 404;
 
-    res.status(statusCode).send({ error });
+    if (typeof err.message === 'string') {
+        res.statusMessage = err.message.split(',')[0];
+    } else {
+        res.statusMessage = 'Something went wrong.';
+    }
+
+    res.status(statusCode).send();
 });
 
 app.listen(PORT, () => {
     console.log(`listening on port: ${PORT}`);
 });
-
-
-// http://docs.sequelizejs.com/manual/tutorial/migrations.html Check it out
-// https://www.duringthedrive.com/2017/05/06/models-migrations-sequelize-node/
