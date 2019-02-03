@@ -2,10 +2,9 @@
 const { errorMessages } = require('../utils/helpers_variables');
 
 module.exports = (sequelize, DataTypes) => {
-  const user = sequelize.define('user', {
+  const User = sequelize.define('User', {
     username: {
       type: DataTypes.STRING,
-      allowNull: false,
       validate: {
         len: {
           args: [1,10],
@@ -15,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
       validate: {
         isEmail: { 
           args: true,
@@ -24,12 +22,11 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     password: { 
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING
     }
   }, {});
-  user.associate = function(models) {
+  User.associate = function(models) {
     // associations can be defined here
   };
-  return user;
+  return User;
 };
