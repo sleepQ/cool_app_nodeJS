@@ -2,6 +2,7 @@
 
 ## Run
 - Rename .env-sample to .env
-- Make sure you have a db (MySQL) running
 - run `npm install`
+- Make sure you have a db (MySQL) running
+- run migrations with `sequelize db:migrate` (run `sequalize` to see all the commands)
 - run `node app`
