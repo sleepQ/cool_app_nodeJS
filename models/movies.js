@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
     comment: DataTypes.STRING,
     notes: DataTypes.STRING,
     score: DataTypes.FLOAT,
-    userId: DataTypes.INTEGER
   }, {});
   Movie.associate = function(models) {
     // associations can be defined here

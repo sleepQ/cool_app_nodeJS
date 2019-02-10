@@ -38,7 +38,8 @@ movies.post('/', (req, res, next) => {
         .then(movie => {
             if (!movie) {
                 movieModel.create(movieData)
-                    .then(movie => res.json({ movie }))
+                    .then(() => movieModel.findAll({ where: { userId: id } }))
+                    .then(movies => res.json(movies))
                     .catch(error => next(error));
             } else {
                 next({ message: "Movie already exists." });
@@ -48,11 +49,31 @@ movies.post('/', (req, res, next) => {
 });
 
 movies.put('/:movieId', (req, res, next) => {
+    const { name, comment, notes, score } = req.body || {};
+    const { movieId } = req.params;
+    const { id } = req.userData || {};
 
+    const data = {
+        name,
+        comment,
+        notes,
+        score
+    };
+
+    movieModel.update(data, { where: { id: movieId } })
+        .then(() => movieModel.findAll({ where: { userId: id } }))
+        .then(movies => res.json(movies))
+        .catch(error => next(error));
 });
 
 movies.delete('/:movieId', (req, res, next) => {
+    const { id } = req.userData || {};
+    const { movieId } = req.params;
 
+    movieModel.destroy({ where: { id: movieId, userId: id } })
+        .then(() => movieModel.findAll({ where: { userId: id } }))
+        .then(movies => res.json(movies))
+        .catch(error => next(error));
 });
 
 module.exports = movies;

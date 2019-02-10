@@ -21,15 +21,11 @@ users.post('/register', (req, res, next) => {
     userModel.findOne({ where: { email } })
         .then(user => {
             if (!user) {
-                bcrypt.hash(password, 10, (error, hash) => {
-                    userData.password = hash;
-
-                    userModel.create(userData)
-                        .then(user => res.json({ id: user.id, username: user.username, email: user.email }))
-                        .catch(error => next(error));
-                });
+                userModel.create(userData)
+                    .then(user => res.json({ id: user.id, username: user.username, email: user.email }))
+                    .catch(error => next(error));
             } else {
-                next({ message: "User already exists." });
+                return next({ message: "User already exists." });
             }
         })
         .catch(error => next(error));
@@ -39,16 +35,19 @@ users.post('/login', (req, res, next) => {
     userModel.findOne({ where: { email: req.body.email } })
         .then(user => {
             if (user) {
-                bcrypt.compare(req.body.password, user.password, (error, result) => {
-                    if (result === true) {
-                        let token = jwt.sign(user.dataValues, process.env.JWT_SECRET_KEY, { expiresIn: jwtExpireTime });
-                        res.json({ token });
-                    } else {
-                        next({ message: 'The password you entered is incorrect.' });
-                    }
-                });
+                bcrypt.compare(req.body.password, user.password)
+                    .then(response => {
+                        if (response) {
+                            jwt.sign(user.dataValues, process.env.JWT_SECRET_KEY, { expiresIn: jwtExpireTime }, function (error, token) {
+                                return res.json({ token });
+                            });
+                        } else {
+                            return next({ message: 'The password you entered is incorrect.' });
+                        }
+                    })
+                    .catch(error => next(error));
             } else {
-                next({ message: 'User does not exist.' });
+                return next({ message: 'User does not exist.' });
             }
         })
         .catch(error => next(error));

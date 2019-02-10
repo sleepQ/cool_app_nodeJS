@@ -9,7 +9,7 @@ module.exports.authMiddleware = (req, res, next) => {
 
         jwt.verify(token, process.env.JWT_SECRET_KEY, (error, authData) => {
             if (error) {
-                next({ statusCode: 403, message: 'Unauthorized' });
+                return next({ statusCode: 401, message: 'Unauthorized' });
             } else {
                 req.userData = authData;
             }
@@ -17,14 +17,14 @@ module.exports.authMiddleware = (req, res, next) => {
 
         next();
     } else {
-        next({ statusCode: 403, message: 'Unauthorized' });
+        return next({ statusCode: 401, message: 'Unauthorized' });
     }
 };
 
 module.exports.errorMiddleware = (error, req, res, next) => {
     const err = error || {};
     const statusCode = err.statusCode || 404;
-
+console.log('____________ERROROROR___________',error)
     if (typeof err.message === 'string') {
         res.statusMessage = err.message.split(',')[0];
     } else {
