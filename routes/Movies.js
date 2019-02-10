@@ -1,6 +1,7 @@
-const express = require("express");
+const express = require('express');
 const cors = require('cors');
-const { Movie: movieModel } = require("../models");
+const { Movie: movieModel } = require('../models');
+const { movieStatuses } = require('../utils/helpers_variables');
 
 const movies = express.Router();
 
@@ -23,22 +24,32 @@ movies.get('/:movieId', (req, res, next) => {
 });
 
 movies.post('/', (req, res, next) => {
-    const { name, comment, notes, score } = req.body || {};
-    const { id } = req.userData || {};
+    let { name, comment, notes, score, watchedAt, movieType, movieStatus } = req.body || {};
+    const { id: userId } = req.userData || {};
+
+    //watchedAt functionality soon
+    watchedAt = null;
+    if (movieStatuses[movieStatus] === 'To-Watch') {
+        comment = null;
+        score = null;
+    }
 
     const movieData = {
         name,
         comment,
         notes,
+        movieStatus,
+        movieType,
         score,
-        userId: id
+        watchedAt,
+        userId
     };
 
-    movieModel.findOne({ where: { name, userId: id } })
+    movieModel.findOne({ where: { name, userId, movieType } })
         .then(movie => {
             if (!movie) {
                 movieModel.create(movieData)
-                    .then(() => movieModel.findAll({ where: { userId: id } }))
+                    .then(() => movieModel.findAll({ where: { userId } }))
                     .then(movies => res.json(movies))
                     .catch(error => next(error));
             } else {
@@ -49,29 +60,40 @@ movies.post('/', (req, res, next) => {
 });
 
 movies.put('/:movieId', (req, res, next) => {
-    const { name, comment, notes, score } = req.body || {};
+    let { name, comment, notes, score, watchedAt, movieType, movieStatus } = req.body || {};
     const { movieId } = req.params;
-    const { id } = req.userData || {};
+    const { id: userId } = req.userData || {};
 
-    const data = {
+    //watchedAt functionality soon
+    watchedAt = null;
+    if (movieStatuses[movieStatus] === 'To-Watch') {
+        comment = null;
+        score = null;
+    }
+
+    const movieData = {
         name,
         comment,
         notes,
-        score
+        movieStatus,
+        movieType,
+        score,
+        watchedAt,
+        userId
     };
 
-    movieModel.update(data, { where: { id: movieId } })
-        .then(() => movieModel.findAll({ where: { userId: id } }))
+    movieModel.update(movieData, { where: { id: movieId } })
+        .then(() => movieModel.findAll({ where: { userId } }))
         .then(movies => res.json(movies))
         .catch(error => next(error));
 });
 
 movies.delete('/:movieId', (req, res, next) => {
-    const { id } = req.userData || {};
+    const { id: userId } = req.userData || {};
     const { movieId } = req.params;
 
-    movieModel.destroy({ where: { id: movieId, userId: id } })
-        .then(() => movieModel.findAll({ where: { userId: id } }))
+    movieModel.destroy({ where: { id: movieId, userId } })
+        .then(() => movieModel.findAll({ where: { userId } }))
         .then(movies => res.json(movies))
         .catch(error => next(error));
 });

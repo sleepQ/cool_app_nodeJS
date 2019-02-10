@@ -20,6 +20,17 @@ module.exports = {
       score: {
         type: Sequelize.FLOAT
       },
+      movieType: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      movieStatus: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      watchedAt: {
+        type: Sequelize.DATE
+      },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
