@@ -12,13 +12,16 @@ module.exports = {
         type: Sequelize.STRING
       },
       comment: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: true
       },
       notes: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: true
       },
       score: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
+        allowNull: true
       },
       movieType: {
         type: Sequelize.INTEGER,
@@ -29,7 +32,8 @@ module.exports = {
         allowNull: false
       },
       watchedAt: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY,
+        allowNull: true
       },
       userId: {
         type: Sequelize.INTEGER,

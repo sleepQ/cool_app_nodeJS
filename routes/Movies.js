@@ -27,11 +27,10 @@ movies.post('/', (req, res, next) => {
     let { name, comment, notes, score, watchedAt, movieType, movieStatus } = req.body || {};
     const { id: userId } = req.userData || {};
 
-    //watchedAt functionality soon
-    watchedAt = null;
     if (movieStatuses[movieStatus] === 'To-Watch') {
         comment = null;
         score = null;
+        watchedAt = null;
     }
 
     const movieData = {
@@ -64,11 +63,10 @@ movies.put('/:movieId', (req, res, next) => {
     const { movieId } = req.params;
     const { id: userId } = req.userData || {};
 
-    //watchedAt functionality soon
-    watchedAt = null;
     if (movieStatuses[movieStatus] === 'To-Watch') {
         comment = null;
         score = null;
+        watchedAt = null;
     }
 
     const movieData = {

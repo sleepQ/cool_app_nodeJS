@@ -7,13 +7,35 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       validate: {
-        notEmpty: true
+        notEmpty: {
+          args: true,
+          msg: errorMessages.INVALID_NAME
+        }
       }
     },
-    comment: DataTypes.STRING,
-    notes: DataTypes.STRING,
+    comment: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        len: {
+          args: [0, 200],
+          msg: errorMessages.INVALID_COMMENT
+        }
+      }
+    },
+    notes: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        len: {
+          args: [0, 200],
+          msg: errorMessages.INVALID_NOTES
+        }
+      }
+    },
     score: {
       type: DataTypes.FLOAT,
+      allowNull: true,
       validate: {
         isFloat: true,
         min: {
@@ -45,9 +67,13 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     watchedAt: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
+      allowNull: true,
       validate: {
-        isDate: true
+        isDate: {
+          args: true,
+          msg: errorMessages.INVALID_DATE
+        }
       }
     }
   }, {});
