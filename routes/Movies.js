@@ -19,7 +19,7 @@ movies.get('/:movieId', (req, res, next) => {
     const { movieId } = req.params;
 
     movieModel.findByPk(movieId)
-        .then(movie => res.json({ movie }))
+        .then(movie => res.json(movie))
         .catch(error => next(error));
 });
 

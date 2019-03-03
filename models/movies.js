@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       validate: {
-        notEmpty: {
-          args: true,
+        len: {
+          args: [1, 40],
           msg: errorMessages.INVALID_NAME
         }
       }

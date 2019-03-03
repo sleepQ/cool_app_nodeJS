@@ -30,6 +30,15 @@ module.exports = (sequelize, DataTypes) => {
           msg: errorMessages.INVALID_PASSWORD
         }
       }
+    },
+    imageUrl: {
+      type: DataTypes.STRING,
+      validate: {
+        isUrl: {
+          args: true,
+          msg: errorMessages.INVALID_IMAGE
+        }
+      }
     }
   }, {});
 
@@ -48,6 +57,13 @@ module.exports = (sequelize, DataTypes) => {
         throw new Error(error);
       });
   });
+
+  User.prototype.toJSON =  function () {
+    let userPayload = Object.assign({}, this.get());
+    delete userPayload.password;
+
+    return userPayload;
+  }
 
   return User;
 };

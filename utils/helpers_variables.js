@@ -1,5 +1,7 @@
 
-module.exports.jwtExpireTime = 7200;
+module.exports.jwtOptions = {
+    expiresIn: 7200
+};
 
 module.exports.errorMessages = {
     INVALID_USERNAME: "Username needs to be 1-15 characters long.",
@@ -9,7 +11,8 @@ module.exports.errorMessages = {
     INVALID_COMMENT: "Comment needs to be 0-200 characters long",
     INVALID_NOTES: "Notes needs to be 0-200 characters long",
     INVALID_DATE: "Invalid date",
-    INVALID_NAME: "Invalid name",
+    INVALID_MOVIE_NAME: "Movie name needs to be 1-40 characters long",
+    INVALID_IMAGE: "Invalid image",
 };
 
 module.exports.movieTypes = [
