@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const { User: userModel } = require("../models");
 const { jwtOptions } = require('../utils/helpers_variables');
-const { authMiddleware } = require('../utils/helpers_functions')
+const { authMiddleware, uploadImage } = require('../utils/helpers_functions');
 
 const users = express.Router();
 
@@ -68,6 +68,30 @@ users.get('/', authMiddleware, (req, res, next) => {
     userModel.findOne({ where: { id } })
         .then(user => res.json(user))
         .catch(error => next(error));
+});
+
+const upload = uploadImage.single('file');
+
+users.put('/avatar', authMiddleware, (req, res, next) => {
+    upload(req, res, (err) => {
+
+        if (err || !req.file) {
+            return next(err);
+        } else {
+            const { path } = req.file || {};
+            const { id } = req.userData || {};
+
+            const data = {
+                imageUrl: `${req.getUrl()}/${path}`
+            };
+
+            userModel.update(data, { where: { id } })
+                .then(() => userModel.findOne({ where: { id } }))
+                .then(user => res.json(user))
+                .catch(error => next(error));
+        }
+
+    });
 });
 
 module.exports = users;

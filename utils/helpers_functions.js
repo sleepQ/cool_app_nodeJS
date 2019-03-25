@@ -1,4 +1,34 @@
 const jwt = require("jsonwebtoken");
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads');
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${new Date().getTime()}-${file.originalname}`);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    const validImgFileExt = ['png', 'jpg', 'jpeg', 'gif', 'svg', 'pdf', 'tif'];
+    const ext = file.originalname.substring(file.originalname.lastIndexOf('.') + 1);
+
+    if (!validImgFileExt.includes(ext)) {
+        const error = new Error('Only images are allowed.');
+        cb(error);
+    } else {
+        cb(null, true);
+    }
+};
+
+module.exports.uploadImage = multer({
+    storage,
+    fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    }
+});
 
 module.exports.authMiddleware = (req, res, next) => {
     const header = req.headers['authorization'];
@@ -24,7 +54,9 @@ module.exports.authMiddleware = (req, res, next) => {
 module.exports.errorMiddleware = (error, req, res, next) => {
     const err = error || {};
     const statusCode = err.statusCode || 404;
-console.log('____________ERROROROR___________',error)
+
+    console.log('____________ERROROROR___________', error)
+
     if (typeof err.message === 'string') {
         res.statusMessage = err.message.split(',')[0];
     } else {

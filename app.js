@@ -17,6 +17,13 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
+app.use((req, res, next) => {
+    req.getUrl = function () {
+        return `${req.protocol}://${req.get('host')}`;
+    }
+    return next();
+});
 
 app.use('/users', Users);
 app.use('/movies', authMiddleware, Movies);
