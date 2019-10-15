@@ -40,7 +40,8 @@ users.post('/login', (req, res, next) => {
                     .then(response => {
                         if (response) {
                             const payload = {
-                                id: user.id
+                                id: user.id,
+                                username: user.username
                             };
 
                             jwt.sign(payload, process.env.JWT_SECRET_KEY, jwtOptions, function (error, token) {
@@ -70,8 +71,21 @@ users.get('/', authMiddleware, (req, res, next) => {
         .catch(error => next(error));
 });
 
-const upload = uploadImage.single('file');
+users.get('/:username', authMiddleware, (req, res, next) => {
+    const { username } = req.params;
 
+    userModel.findOne({ where: { username }, attributes: ['username', 'imageUrl'] })
+        .then(stranger => {
+            if (stranger) {
+                return res.json(stranger);
+            } else {
+                return next({ message: 'User does not exist.' });
+            }
+        })
+        .catch(error => next(error));
+});
+
+const upload = uploadImage.single('file');
 users.put('/avatar', authMiddleware, (req, res, next) => {
     upload(req, res, (err) => {
 

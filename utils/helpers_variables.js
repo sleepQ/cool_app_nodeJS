@@ -24,3 +24,9 @@ module.exports.movieStatuses = [
     'To-Watch',
     'Watched'
 ];
+
+module.exports.socketEvent = {
+    ONLINE: 'ONLINE',
+    PRIVATE_MESSAGE: 'PRIVATE_MESSAGE',
+    DISCONNECT: 'DISCONNECT',
+};

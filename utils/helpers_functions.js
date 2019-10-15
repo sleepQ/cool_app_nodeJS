@@ -65,3 +65,10 @@ module.exports.errorMiddleware = (error, req, res, next) => {
 
     res.status(statusCode).send();
 };
+
+module.exports.getUrlMiddleware = (req, res, next) => {
+    req.getUrl = function () {
+        return `${req.protocol}://${req.get('host')}`;
+    }
+    return next();
+};
